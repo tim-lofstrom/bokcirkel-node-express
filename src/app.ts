@@ -1,7 +1,22 @@
 import express from 'express'
 import path from 'path';
 
+import livereload from 'livereload';
+import connectlivereload from 'connect-livereload';
+
+const reloader = livereload.createServer();
+reloader.watch(path.join(__dirname, 'public'));
+
+reloader.server.once('connection', () => {
+    setTimeout(() => {
+        reloader.refresh('/');
+    }, 100);
+});
+
 const app = express();
+
+app.use(connectlivereload());
+
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -14,7 +29,7 @@ app.get('/home', (req, res) => {
 
 app.get('/api', (req, res) => {
     res.json({
-        name: 'Tim'
+        name: 'Tim Löfström'
     });
 });
 
