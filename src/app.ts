@@ -1,24 +1,21 @@
-import http from 'http';
-import fs from 'fs';
+import express from 'express'
 import path from 'path';
 
-const pagesFolder = 'public';
-const indexPage = fs.readFileSync(path.resolve(__dirname, pagesFolder, 'index.html'));
-const homePage = fs.readFileSync(path.resolve(__dirname, pagesFolder, 'home.html'));
-const notFoundPage = fs.readFileSync(path.resolve(__dirname, pagesFolder, 'not_found.html'));
+const app = express();
+app.use(express.static(path.resolve(__dirname, 'public')));
 
-const server = http.createServer((req, res) => {
-    switch (req.url) {
-        case '/':
-            res.end(indexPage);
-            break;
-        case '/home':
-            res.end(homePage);
-            break;
-        default:
-            res.writeHead(404);
-            res.end(notFoundPage);
-    }
-})
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
-server.listen(3000);
+app.get('/home', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'home.html'));
+});
+
+app.get('/api', (req, res) => {
+    res.json({
+        name: 'Tim'
+    });
+});
+
+app.listen(3000);
